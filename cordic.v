@@ -33,7 +33,7 @@ module cordic (
         count<=count+1'b1;
     end 
     always @(posedge clk ) begin
-        if (count==4'b1010) begin
+        if (count==4'b1011) begin
             cosine_temp<=x;
             sine_temp<=y;
             diff <= {in,4'b0000}; 
