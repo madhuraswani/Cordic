@@ -39,6 +39,8 @@ module cordic (
     assign in_pos[6] = in[7]&(x[6]^(x[5]&x[4]&x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[6]);
     assign in_pos[7] = in[7]&(x[7]^(x[6]&x[5]&x[4]&x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[7]);
 always @(posedge rst) begin
+        cosine_temp<=14'd0;
+        sine_temp<=14'd0;
         diff <= {in_pos,6'b000000}; 
         diff_cosine <= 14'b01_100100100010 - {in_pos,6'b000000};
         count <= 4'b0000;

@@ -37,18 +37,30 @@ clk=~clk;
 end
 
 initial begin
-    $monitor("Cycle: %t Cosine: %f Sine: %f angle: %f actual_sine: %f actual_cosine: %f sine_gain/loss= %f cos_gain/loss= %f",$time/period,$itor(cosine*o_SF),$itor(sine*o_SF),$itor(in*sf),$sin($itor(in*sf)),$cos($itor(in*sf)),($sin($itor(in*sf))-$itor(sine*o_SF))/$sin($itor(in*sf))*100,($cos($itor(in*sf))-$itor(cosine*o_SF))/$cos($itor(in*sf))*100);
+    $monitor("Cycle: %t \t Cosine: %f \t Sine: %f \t angle: %f \t actual_sine: %f \t actual_cosine: %f \n \t sine_error= %f \t cos_error= %f",$time/period,$itor(cosine*o_SF),$itor(sine*o_SF),$itor(in*sf),$sin($itor(in*sf)),$cos($itor(in*sf)),($sin($itor(in*sf))-$itor(sine*o_SF)),($cos($itor(in*sf))-$itor(cosine*o_SF)));
     #5 rst_n = 1'b0;
 	#5 rst_n = 1'b1;
     in=8'b00_001110;
+    repeat(14) @(posedge clk);
     //in=8'b00_101011;
     //in=8'b00_101100;
     //in=8'b10_011101;
-    //in=8'b01_100011;
-    //in=8'b00_000000;
-    //in=8'b00_110010;
-    in=8'b11_001110;
+    rst_n = 1'b0;
+	#5 rst_n = 1'b1;
+    in=8'b01_100011; //near pi/2
     repeat(14) @(posedge clk);
+    rst_n = 1'b0;
+	#5 rst_n = 1'b1;
+    in=8'b00_000000;
+    repeat(14) @(posedge clk);
+    rst_n = 1'b0;
+	#5 rst_n = 1'b1;
+    in=8'b00_110010;
+    repeat(14) @(posedge clk);
+    rst_n = 1'b0;
+	#5 rst_n = 1'b1;
+    in=8'b11_001110; //near -pi/2
+    repeat(24) @(posedge clk);
     repeat(2) @(posedge clk);
     $finish(2);
 end
