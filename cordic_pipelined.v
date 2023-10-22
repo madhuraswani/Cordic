@@ -138,6 +138,19 @@ lut lu10(.in(4'd10),.out(lut_out10));
 lut lu11(.in(4'd11),.out(lut_out11));
 //stage0
 //count=0
+always @(posedge rst)
+begin
+    cosine_temp<=14'd0;
+    sine_temp<=14'd0;
+    diff <= {in_pos,6'b000000};
+    diff_cosine <= 14'b01_100100100010 - {in_pos,6'b000000};
+    xa <= 14'b0_1001101101111;
+    ya <= 14'b0_0000000000000;
+    xb <= 14'b0_1001101101111;
+    yb <= 14'b0_0000000000000;
+end
+
+
 always @(posedge clk)begin
             begin
                 case (diff0[13])
