@@ -1,4 +1,4 @@
-`include "cordic copy.v"
+`include "cordic_pipelined.v"
 `default_nettype none
 `timescale 1ns/1ns
 
@@ -41,26 +41,19 @@ initial begin
     #5 rst_n = 1'b0;
 	#5 rst_n = 1'b1;
     in=8'b00_001110;
-    repeat(14) @(posedge clk);
+    repeat(1) @(posedge clk);
     //in=8'b00_101011;
     //in=8'b00_101100;
     //in=8'b10_011101;
-    rst_n = 1'b0;
-	#5 rst_n = 1'b1;
     in=8'b01_100011; //near pi/2
-    repeat(14) @(posedge clk);
-    rst_n = 1'b0;
-	#5 rst_n = 1'b1;
+    repeat(1) @(posedge clk);
     in=8'b00_000000;
-    repeat(14) @(posedge clk);
-    rst_n = 1'b0;
-	#5 rst_n = 1'b1;
+    repeat(1) @(posedge clk);
     in=8'b00_110010;
-    repeat(14) @(posedge clk);
-    rst_n = 1'b0;
-	#5 rst_n = 1'b1;
+    repeat(1) @(posedge clk);
     in=8'b11_001110; //near -pi/2
-    repeat(24) @(posedge clk);
+    repeat(28) @(posedge clk);
+    in=8'b11_001110;
     repeat(2) @(posedge clk);
     $finish(2);
 end

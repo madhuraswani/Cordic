@@ -10,7 +10,7 @@ module cordic (
 input clk,rst;
 input signed [7:0] in;
 output reg signed [7:0] sine;
-output reg signed [7:0] cosine;
+output reg [7:0] cosine;
 
 reg signed [13:0] sine_temp;
 reg signed [13:0] cosine_temp;
@@ -99,20 +99,12 @@ reg signed    [13:0] x11b;
 reg signed    [13:0] y11a;
 reg signed    [13:0] y11b;
 reg signed    [13:0] diff11;
-<<<<<<< Updated upstream
-reg signed    [13:0] diff_cosine11
-reg signed [13:0]diff12;
-reg signed [13:0]diff_cosine12;
-reg signed [13:0]y12a;
-reg signed [13:0]y12b; 
-=======
 reg signed    [13:0] diff_cosine11;
 reg signed [13:0] diff12;
 reg signed [13:0] diff_cosine12;
 reg signed [13:0] y12a;
 reg signed [13:0] y12b; 
->>>>>>> Stashed changes
-wire [13:0] lut_out0;
+wire  [13:0] lut_out0;
 wire [13:0] lut_out1;
 wire [13:0] lut_out2;
 wire [13:0] lut_out3;
@@ -137,21 +129,41 @@ lut lu9(.in(4'd9),.out(lut_out9));
 lut lu10(.in(4'd10),.out(lut_out10));
 lut lu11(.in(4'd11),.out(lut_out11));
 //stage0
-//count=0
-always @(posedge rst)
-begin
-    cosine_temp<=14'd0;
-    sine_temp<=14'd0;
-    diff <= {in_pos,6'b000000};
-    diff_cosine <= 14'b01_100100100010 - {in_pos,6'b000000};
-    xa <= 14'b0_1001101101111;
-    ya <= 14'b0_0000000000000;
-    xb <= 14'b0_1001101101111;
-    yb <= 14'b0_0000000000000;
-end
-
+reg flag0;
+reg flag1;
+reg flag2;
+reg flag3;
+reg flag4;
+reg flag5;
+reg flag6;
+reg flag7;
+reg flag8;
+reg flag9;
+reg flag10;
+reg flag11;
+reg flag12;
 
 always @(posedge clk)begin
+    diff0 <= {in_pos,6'b000000};
+    diff_cosine0 <= 14'b01_100100100010 - {in_pos,6'b000000};
+    x0a <= 14'b0_1001101101111;
+    y0a <= 14'b0_0000000000000;
+    x0b <= 14'b0_1001101101111;
+    y0b <= 14'b0_0000000000000;
+    flag0<=in[7];
+    flag1<=flag0;
+    flag2<=flag1;
+    flag3<=flag2;
+    flag4<=flag3;
+    flag5<=flag4;
+    flag6<=flag5;
+    flag7<=flag6;
+    flag8<=flag7;
+    flag9<=flag8;
+    flag10<=flag9;
+    flag11<=flag10;
+    flag12<=flag11;
+
             begin
                 case (diff0[13])
                 1'b1: begin
@@ -198,7 +210,7 @@ always @(posedge clk)begin
                     x2a <= x1a + (y1a >>> 1);
                     y2a <= y1a - (x1a >>> 1);
                     
-                    diff1 <= diff1 + lut_out1;
+                    diff2 <= diff1 + lut_out1;
                 end
                 1'b0: begin
                     x2a <= x1a - (y1a >>> 1);
@@ -234,11 +246,7 @@ end
 always @(posedge clk)begin
             begin
                 case (diff2[13])
-<<<<<<< Updated upstream
-                1'b2: begin
-=======
                 1'b1: begin
->>>>>>> Stashed changes
                     x3a <= x2a + (y2a >>> 2);
                     y3a <= y2a - (x2a >>> 2);
                     
@@ -254,11 +262,7 @@ always @(posedge clk)begin
             end
             begin
                 case (diff_cosine2[13])
-<<<<<<< Updated upstream
-                1'b2: begin
-=======
                 1'b1: begin
->>>>>>> Stashed changes
                     x3b <= x2b + (y2b >>> 2);
                     y3b <= y2b - (x2b >>> 2);
                     
@@ -519,7 +523,7 @@ end
 //count=9
 always @(posedge clk)begin
             begin
-                case (diff10[13])
+                case (diff9[13])
                 1'b1: begin
                     x10a <= x9a + (y9a >>> 9);
                     y10a <= y9a - (x9a >>> 9);
@@ -600,17 +604,13 @@ always @(posedge clk)begin
             begin
                 case (diff11[13])
                 1'b1: begin
-                    sine_temp <= x11a + (y11a >>> 11);
-<<<<<<< Updated upstream
-                    y11a <= y11a - (x11a >>> 11);
-=======
+                    cosine_temp <= x11a + (y11a >>> 11);
                     y12a <= y11a - (x11a >>> 11);
->>>>>>> Stashed changes
                     
                     diff12 <= diff11 + lut_out11;
                 end
                 1'b0: begin
-                    sine_temp <= x11a - (y11a >>> 11);
+                    cosine_temp <= x11a - (y11a >>> 11);
                     y12a <= y11a + (x11a >>> 11);
                     
                     diff12 <= diff11 - lut_out11;
@@ -620,13 +620,13 @@ always @(posedge clk)begin
             begin
                 case (diff_cosine11[13])
                 1'b1: begin
-                    cosine_temp <= x11b + (y11b >>> 11);
+                    sine_temp <= x11b + (y11b >>> 11);
                     y12b <= y11b - (x11b >>> 11);
                     
                     diff_cosine12 <= diff_cosine11 + lut_out11;
                 end
                 1'b0: begin
-                    cosine_temp <= x11b - (y11b >>> 11);
+                    sine_temp <= x11b - (y11b >>> 11);
                     y12b <= y11b + (x11b >>> 11);
                     
                     diff_cosine12 <= diff_cosine11 - lut_out11;
@@ -660,8 +660,8 @@ end
 //         diffq <= diffd;
 //         diff_cosineq <= diff_cosined;
 // endmodule
-wire [6:0] fracpart;
-wire [6:0] cosine_fracpart;
+    wire [6:0] fracpart;
+    wire [6:0] cosine_fracpart;
     wire [7:0] rounded_sine;
     wire [7:0] rounded_sine1;
     wire [7:0] rounded_cosine;
@@ -671,14 +671,14 @@ wire [6:0] cosine_fracpart;
     assign rounded_cosine = {cosine_temp[13],cosine_fracpart};
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
-    assign rounded_sine1[0] = in[7]&(~x1[0])|(~in[7]&rounded_sine[0]);
-    assign rounded_sine1[1] = in[7]&(x1[1]^x1[0])|(~in[7]&rounded_sine[1]);
-    assign rounded_sine1[2] = in[7]&(x1[2]^(x1[1]&x1[0]))|(~in[7]&rounded_sine[2]);
-    assign rounded_sine1[3] = in[7]&(x1[3]^(x1[2]&x1[1]&x1[0]))|(~in[7]&rounded_sine[3]);
-    assign rounded_sine1[4] = in[7]&(x1[4]^(x1[3]&x1[2]&x1[1]&x1[0]))|(~in[7]&rounded_sine[4]);
-    assign rounded_sine1[5] = in[7]&(x1[5]^(x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~in[7]&rounded_sine[5]);
-    assign rounded_sine1[6] = in[7]&(x1[6]^(x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~in[7]&rounded_sine[6]);
-    assign rounded_sine1[7] = in[7]&(x1[7]^(x1[6]&x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~in[7]&rounded_sine[7]);
+    assign rounded_sine1[0] = flag12&(~x1[0])|(~flag12&rounded_sine[0]);
+    assign rounded_sine1[1] = flag12&(x1[1]^x1[0])|(~flag12&rounded_sine[1]);
+    assign rounded_sine1[2] = flag12&(x1[2]^(x1[1]&x1[0]))|(~flag12&rounded_sine[2]);
+    assign rounded_sine1[3] = flag12&(x1[3]^(x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[3]);
+    assign rounded_sine1[4] = flag12&(x1[4]^(x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[4]);
+    assign rounded_sine1[5] = flag12&(x1[5]^(x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[5]);
+    assign rounded_sine1[6] = flag12&(x1[6]^(x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[6]);
+    assign rounded_sine1[7] = flag12&(x1[7]^(x1[6]&x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[7]);
     always @(posedge clk ) begin
         sine<=rounded_sine1;
         cosine<=rounded_cosine;
