@@ -1,4 +1,4 @@
-`include "Cordic copy.v"
+`include "cordic_pipelined.v"
 `default_nettype none
 `timescale 1ns/1ns
 

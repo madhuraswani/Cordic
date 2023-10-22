@@ -99,11 +99,19 @@ reg signed    [13:0] x11b;
 reg signed    [13:0] y11a;
 reg signed    [13:0] y11b;
 reg signed    [13:0] diff11;
+<<<<<<< Updated upstream
 reg signed    [13:0] diff_cosine11
 reg signed [13:0]diff12;
 reg signed [13:0]diff_cosine12;
 reg signed [13:0]y12a;
 reg signed [13:0]y12b; 
+=======
+reg signed    [13:0] diff_cosine11;
+reg signed [13:0] diff12;
+reg signed [13:0] diff_cosine12;
+reg signed [13:0] y12a;
+reg signed [13:0] y12b; 
+>>>>>>> Stashed changes
 wire [13:0] lut_out0;
 wire [13:0] lut_out1;
 wire [13:0] lut_out2;
@@ -213,7 +221,11 @@ end
 always @(posedge clk)begin
             begin
                 case (diff2[13])
+<<<<<<< Updated upstream
                 1'b2: begin
+=======
+                1'b1: begin
+>>>>>>> Stashed changes
                     x3a <= x2a + (y2a >>> 2);
                     y3a <= y2a - (x2a >>> 2);
                     
@@ -229,7 +241,11 @@ always @(posedge clk)begin
             end
             begin
                 case (diff_cosine2[13])
+<<<<<<< Updated upstream
                 1'b2: begin
+=======
+                1'b1: begin
+>>>>>>> Stashed changes
                     x3b <= x2b + (y2b >>> 2);
                     y3b <= y2b - (x2b >>> 2);
                     
@@ -572,7 +588,11 @@ always @(posedge clk)begin
                 case (diff11[13])
                 1'b1: begin
                     sine_temp <= x11a + (y11a >>> 11);
+<<<<<<< Updated upstream
                     y11a <= y11a - (x11a >>> 11);
+=======
+                    y12a <= y11a - (x11a >>> 11);
+>>>>>>> Stashed changes
                     
                     diff12 <= diff11 + lut_out11;
                 end
