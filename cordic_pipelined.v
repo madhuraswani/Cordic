@@ -1,4 +1,8 @@
+
+// look up table used to find angle in radians for comparison with the achieved angle
 `include "lut.v"
+// 2's complement block used for sine angle calculation as this cordic algo works between 0 and pi/2
+// and takes in angle between -pi/2 to pi/2
 `include "twoscomplimentconv.v"
 module cordic (
     clk,
@@ -12,11 +16,13 @@ input signed [7:0] in;
 output reg signed [7:0] sine;
 output reg [7:0] cosine;
 
-reg signed [13:0] sine_temp;
-reg signed [13:0] cosine_temp;
 
 wire signed [7:0] in_pos ;
 wire signed [7:0]  x;
+
+// x wire is assigned with the complement of the input
+// start of the logic for 2's complement using binary excess 1 logic if the sign bit is 1 
+// when sign bit is 0 then input is passed as it is to the wire in_pos
 assign x =~in;
 assign in_pos[0] = in[7]&(~x[0])|(~in[7]&in[0]);
 assign in_pos[1] = in[7]&(x[1]^x[0])|(~in[7]&in[1]);
@@ -26,19 +32,32 @@ assign in_pos[4] = in[7]&(x[4]^(x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[4]);
 assign in_pos[5] = in[7]&(x[5]^(x[4]&x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[5]);
 assign in_pos[6] = in[7]&(x[6]^(x[5]&x[4]&x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[6]);
 assign in_pos[7] = in[7]&(x[7]^(x[6]&x[5]&x[4]&x[3]&x[2]&x[1]&x[0]))|(~in[7]&in[7]);
+    // end of 2's complement logic
 
-reg signed [13:0] x0a;
-reg signed  [13:0] x0b;
-reg signed  [13:0] y0a;
-reg signed  [13:0] y0b;
-reg signed  [13:0] diff0;
-reg signed  [13:0] diff_cosine0;
+    // First Cycle variables defined below:
+
+    reg signed [13:0] x0a; // x0a holds the initial cosine value for the initial diff0
+    reg signed  [13:0] x0b;  // x0a holds the initial sine value for the initial diff_cosine0
+    reg signed  [13:0] y0a; // y0a holds the initial sine value for the initial diff0
+    reg signed  [13:0] y0b; // y0b holds the initial cosine value for the initial diff_cosine0
+    reg signed  [13:0] diff0; //starting difference between the initial angle and angle to be achieved
+    reg signed  [13:0] diff_cosine0; // starting difference between (pi/2 - initial angle) and the angle to be achieved
+
+    // thus x variable with suffix a ie. x0a,x1a,x2a etc will provide cosine angle value with good accuracy
+    // and x variable with suffix b  ie. x0b,x1b,x2b etc will provide sine angle value with good accuracy
+    // diff wirh suffix 0,1,2 ie. diff0 ,diff1,diff2 etc are the difference between the final angle and the achieved angle.
+    // diff_cosine with suffix 0,1,2 ie. diff_cosine0,diff_cosine1 etc are the difference between the final angle and (pi/2 - the achieved angle)
+
+    
+    // Second Cycle variables defined below:
 reg signed [13:0] x1a;
 reg signed  [13:0] x1b;
 reg signed  [13:0] y1a;
 reg signed  [13:0] y1b;
 reg signed  [13:0] diff1;
 reg signed  [13:0] diff_cosine1;
+
+    // Third Cycle variables defined below:
 reg signed [13:0] x2a;
 reg signed  [13:0] x2b;
 reg signed  [13:0] y2a;
@@ -46,64 +65,88 @@ reg signed  [13:0] y2b;
 reg signed  [13:0] diff2;
 reg signed  [13:0] diff_cosine2;
 
+    // Fourth Cycle variables defined below:
+
 reg signed  [13:0] x3a;
 reg signed  [13:0] x3b;
 reg signed  [13:0] y3a;
 reg signed  [13:0] y3b;
 reg signed  [13:0] diff3;
 reg signed  [13:0] diff_cosine3;
+
+    // Fifth Cycle variables defined below:
 reg signed  [13:0] x4a;
 reg signed  [13:0] x4b;
 reg signed  [13:0] y4a;
 reg signed  [13:0] y4b;
 reg signed  [13:0] diff4;
 reg signed  [13:0] diff_cosine4;
+
+        // Sixth Cycle variables defined below:
 reg signed [13:0] x5a;
 reg signed  [13:0] x5b;
 reg signed  [13:0] y5a;
 reg signed  [13:0] y5b;
 reg signed  [13:0] diff5;
 reg signed  [13:0] diff_cosine5;
+
+        // Seventh Cycle variables defined below:
 reg signed   [13:0] x6a;
 reg signed   [13:0] x6b;
 reg signed   [13:0] y6a;
 reg signed   [13:0] y6b;
 reg signed   [13:0] diff6;
 reg signed   [13:0] diff_cosine6;
+
+    // Eighth Cycle variables defined below:
 reg signed    [13:0] x7a;
 reg signed    [13:0] x7b;
 reg signed    [13:0] y7a;
 reg signed    [13:0] y7b;
 reg signed    [13:0] diff7;
 reg signed    [13:0] diff_cosine7;
+
+    // Ninth Cycle variables defined below:
 reg signed    [13:0] x8a;
 reg signed    [13:0] x8b;
 reg signed    [13:0] y8a;
 reg signed    [13:0] y8b;
 reg signed    [13:0] diff8;
 reg signed    [13:0] diff_cosine8;
+
+     // Tenth Cycle variables defined below:
 reg signed    [13:0] x9a;
 reg signed    [13:0] x9b;
 reg signed    [13:0] y9a;
 reg signed    [13:0] y9b;
 reg signed    [13:0] diff9;
 reg signed    [13:0] diff_cosine9;
+
+     // Eleventh Cycle variables defined below:
 reg signed    [13:0] x10a;
 reg signed    [13:0] x10b;
 reg signed    [13:0] y10a;
 reg signed    [13:0] y10b;
 reg signed    [13:0] diff10;
 reg signed    [13:0] diff_cosine10;
+
+     // twelfth Cycle variables defined below:
 reg signed    [13:0] x11a;
 reg signed    [13:0] x11b;
 reg signed    [13:0] y11a;
 reg signed    [13:0] y11b;
 reg signed    [13:0] diff11;
 reg signed    [13:0] diff_cosine11;
+
+ // thirteenth Cycle variables defined below:    
 reg signed [13:0] diff12;
 reg signed [13:0] diff_cosine12;
 reg signed [13:0] y12a;
 reg signed [13:0] y12b; 
+reg signed [13:0] sine_temp;
+reg signed [13:0] cosine_temp;
+
+//lut table variable for each cycle defined below:    
 wire  [13:0] lut_out0;
 wire [13:0] lut_out1;
 wire [13:0] lut_out2;
@@ -116,6 +159,9 @@ wire [13:0] lut_out8;
 wire [13:0] lut_out9;
 wire [13:0] lut_out10;
 wire [13:0] lut_out11;
+
+
+ // lut module called to get the hardcoded lut table into these lut variables   
 lut lu0(.in(4'd0),.out(lut_out0));
 lut lu1(.in(4'd1),.out(lut_out1));
 lut lu2(.in(4'd2),.out(lut_out2));
@@ -128,7 +174,10 @@ lut lu8(.in(4'd8),.out(lut_out8));
 lut lu9(.in(4'd9),.out(lut_out9));
 lut lu10(.in(4'd10),.out(lut_out10));
 lut lu11(.in(4'd11),.out(lut_out11));
-//stage0
+
+    
+//flag variables used to propagate the sign bit of input angle to 
+    //prevent it from getting erased by different input due to pipelining operation
 reg flag0;
 reg flag1;
 reg flag2;
@@ -143,14 +192,15 @@ reg flag10;
 reg flag11;
 reg flag12;
 
+    //  first cycle variables getting assigned and compared with entered angle
 always @(posedge clk)begin
-    diff0 <= {in_pos,6'b000000};
-    diff_cosine0 <= 14'b01_100100100010 - {in_pos,6'b000000};
-    x0a <= 14'b0_1001101101111;
-    y0a <= 14'b0_0000000000000;
-    x0b <= 14'b0_1001101101111;
-    y0b <= 14'b0_0000000000000;
-    flag0<=in[7];
+    diff0 <= {in_pos,6'b000000}; // initial entered angle
+    diff_cosine0 <= 14'b01_100100100010 - {in_pos,6'b000000}; // pi/2 - initial entered angle 
+    x0a <= 14'b0_1001101101111;  // 0.6072 in base 2 
+    y0a <= 14'b0_0000000000000; // 0 value
+    x0b <= 14'b0_1001101101111; //0.6072 in base 2
+    y0b <= 14'b0_0000000000000; // 0 in base 2
+    flag0<=in[7]; // input sign bit stored in flag bit and propagated
     flag1<=flag0;
     flag2<=flag1;
     flag3<=flag2;
@@ -167,15 +217,22 @@ always @(posedge clk)begin
             begin
                 case (diff0[13])
                 1'b1: begin
-                    x1a <= x0a + (y0a >>> 0);
-                    y1a <= y0a - (x0a >>> 0);
+                    // -pi/4 degree rotation operation
+                    // next cycle variables getting updated by shifting by -pi/4
                     
+                    x1a <= x0a + (y0a >>> 0); // arithmetic sign shift operation
+                    y1a <= y0a - (x0a >>> 0);
+
+                    // updating diff between 2 angles after rotation by -pi/4 angle.
                     diff1 <= diff0 + lut_out0;
                 end
                 1'b0: begin
+                     // pi/4 degree rotation operation
+                    // next cycle variables getting updated by shifting by pi/4
                     x1a <= x0a - (y0a >>> 0);
                     y1a <= y0a + (x0a >>> 0);
                     
+                    // updating diff between 2 angles after rotation by pi/4 angle.
                     diff1 <= diff0 - lut_out0;
                 end
                 endcase
@@ -183,9 +240,12 @@ always @(posedge clk)begin
             begin
                 case (diff_cosine0[13])
                 1'b1: begin
+                    // pi/4 degree rotation operation
+                    // next cycle variables getting updated by shifting by -pi/4 
                     x1b <= x0b + (y0b >>> 0);
                     y1b <= y0b - (x0b >>> 0);
                     
+                    // updating diff between 2 angles after rotation by -pi/4 angle.
                     diff_cosine1 <= diff_cosine0 + lut_out0;
                 end
                 1'b0: begin
