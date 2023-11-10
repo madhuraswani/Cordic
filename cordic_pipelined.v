@@ -694,41 +694,32 @@ always @(posedge clk)begin
                 endcase
             end
 end
-
-
-//module for flip flop in between stages
-// module pipe_latch(
-// 	input clk,
-// 	input [13:0] xda,
-//     input [13:0] xdb,
-//     input [13:0] yda,
-//     input [13:0] ydb,
-//     input [13:0] diffd,
-//     input [13:0] diff_cosined,
-// 	output reg [13:0] xqa,
-//     output reg [13:0] xqb,
-//     output reg [13:0] yqa,
-//     output reg [13:0] yqb,
-//     output reg [13:0] diffq,
-//     output reg [13:0] diff_cosineq,
-//     );
-// 	always @(posedge clk)
-// 		xqa <= xda;
-//         xqb <= xdb;
-//         yqa <= yda;
-//         yqb <= ydb;
-//         diffq <= diffd;
-//         diff_cosineq <= diff_cosined;
-// endmodule
     wire [6:0] fracpart;
     wire [6:0] cosine_fracpart;
-    wire [7:0] rounded_sine;
-    wire [7:0] rounded_sine1;
-    wire [7:0] rounded_cosine;
-    assign fracpart=sine_temp[12:6];
-    assign cosine_fracpart=cosine_temp[12:6];
-    assign rounded_sine = {sine_temp[13],fracpart};
-    assign rounded_cosine = {cosine_temp[13],cosine_fracpart};
+    reg  [7:0] rounded_sine;
+    reg [7:0] rounded_sine1;
+    reg [7:0] rounded_cosine;
+    reg [7:0] rounded_cosine1;
+    assign fracpart=sine_temp[12:6]+sine_temp[5];
+    assign cosine_fracpart=cosine_temp[12:6]+cosine_temp[5];
+    always @(posedge clk) begin
+        case (sine_temp[12])
+            1'b0: begin
+                rounded_sine = {sine_temp[13],fracpart};
+            end
+            1'b1: begin
+                rounded_sine = sine_temp[13:6];
+            end
+        endcase
+        case (cosine_temp[12])
+           1'b0 : begin
+                rounded_cosine = {cosine_temp[13],cosine_fracpart};
+           end
+           1'b1 : begin
+                rounded_cosine = cosine_temp[13:6];
+           end
+        endcase
+    end
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
     assign rounded_sine1[0] = flag12&(~x1[0])|(~flag12&rounded_sine[0]);
