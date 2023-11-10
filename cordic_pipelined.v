@@ -694,12 +694,14 @@ always @(posedge clk)begin
                 endcase
             end
 end
+    // rounding logic is given below:
     wire [6:0] fracpart;
     wire [6:0] cosine_fracpart;
     reg  [7:0] rounded_sine;
     reg [7:0] rounded_sine1;
     reg [7:0] rounded_cosine;
     reg [7:0] rounded_cosine1;
+
     assign fracpart=sine_temp[12:6]+sine_temp[5];
     assign cosine_fracpart=cosine_temp[12:6]+cosine_temp[5];
     always @(posedge clk) begin
@@ -720,6 +722,8 @@ end
            end
         endcase
     end
+
+    // Depending upon the sign bit saved in the flag12, either the sine value is 2's complemented or  just passed as it is.
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
     assign rounded_sine1[0] = flag12&(~x1[0])|(~flag12&rounded_sine[0]);
@@ -731,8 +735,8 @@ end
     assign rounded_sine1[6] = flag12&(x1[6]^(x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[6]);
     assign rounded_sine1[7] = flag12&(x1[7]^(x1[6]&x1[5]&x1[4]&x1[3]&x1[2]&x1[1]&x1[0]))|(~flag12&rounded_sine[7]);
     always @(posedge clk ) begin
-        sine<=rounded_sine1;
-        cosine<=rounded_cosine;
+        sine<=rounded_sine1; // final pipeline for saving sine
+        cosine<=rounded_cosine; // final pipeline for saving cosine
     end
 
 
