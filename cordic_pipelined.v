@@ -743,6 +743,15 @@ end
     end
 
     // Depending upon the sign bit saved in the flag12, either the sine value is 2's complemented or  just passed as it is.
+=======
+                rounded_cosine <= {cosine_temp[13],cosine_fracpart};
+           end
+           1'b1 : begin
+                rounded_cosine <= cosine_temp[13:6];
+           end
+        endcase
+    end
+>>>>>>> Stashed changes
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
     assign rounded_sine1[0] = flag12&(~x1[0])|(~flag12&rounded_sine[0]);
