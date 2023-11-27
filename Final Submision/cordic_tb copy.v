@@ -39,20 +39,21 @@ end
 
 initial begin
     $monitor("Cycle: %t \t Cosine: %f \t Sine: %f \t angle: %f \t actual_sine: %f \t actual_cosine: %f \n",$time/period,$itor(cosine*o_SF),$itor(sine*o_SF),$itor(in*sf),$sin($itor(in*sf)),$cos($itor(in*sf)));
-    repeat(1) @(posedge clk);
     in=8'b00_001110;
-    repeat(1) @(posedge clk);
+    repeat(2) @(posedge clk);
     //in=8'b00_101011;
     //in=8'b00_101100;
-    in=8'b10_011110;
+    in=8'b10_011101;
     repeat(1) @(posedge clk);
-    in=8'b01_100010; //near pi/2
+    in=8'b01_100011; //near pi/2
     repeat(1) @(posedge clk);
     in=8'b00_000000;
     repeat(1) @(posedge clk);
     in=8'b00_110010; // near pi/4
     repeat(1) @(posedge clk);
     in=8'b11_001110; //near -pi/4
+    repeat(28) @(posedge clk);
+    in=8'b11_001110;
     repeat(2) @(posedge clk);
     $finish(2); 
 end

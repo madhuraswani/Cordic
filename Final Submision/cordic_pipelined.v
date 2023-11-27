@@ -696,52 +696,33 @@ always @(posedge clk)begin
                 endcase
             end
 end
-<<<<<<< Updated upstream
     // rounding logic is given below:
-    wire [6:0] fracpart;
-    wire [6:0] cosine_fracpart;
-    reg  [7:0] rounded_sine;
-    reg [7:0] rounded_sine1;
-    reg [7:0] rounded_cosine;
-    reg [7:0] rounded_cosine1;
-
-=======
     wire [6:0] fracpart;
     wire [6:0] cosine_fracpart;
     reg  [7:0] rounded_sine;
     wire [7:0] rounded_sine1;
     reg [7:0] rounded_cosine;
     reg [7:0] rounded_cosine1;
->>>>>>> Stashed changes
     assign fracpart=sine_temp[12:6]+sine_temp[5];
     assign cosine_fracpart=cosine_temp[12:6]+cosine_temp[5];
     always @(posedge clk) begin
         case (sine_temp[12])
             1'b0: begin
-<<<<<<< Updated upstream
-                rounded_sine = {sine_temp[13],fracpart};
-            end
-            1'b1: begin
-                rounded_sine = sine_temp[13:6];
-=======
                 rounded_sine <= {sine_temp[13],fracpart};
             end
             1'b1: begin
                 rounded_sine <= sine_temp[13:6];
->>>>>>> Stashed changes
             end
         endcase
         case (cosine_temp[12])
            1'b0 : begin
-<<<<<<< Updated upstream
-                rounded_cosine = {cosine_temp[13],cosine_fracpart};
+                rounded_cosine <= {cosine_temp[13],cosine_fracpart};
            end
            1'b1 : begin
-                rounded_cosine = cosine_temp[13:6];
+                rounded_cosine <= cosine_temp[13:6];
            end
         endcase
     end
-
     // Depending upon the sign bit saved in the flag12, either the sine value is 2's complemented or  just passed as it is.
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
