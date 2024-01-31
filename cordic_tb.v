@@ -4,6 +4,7 @@
 
 module tb_cordic_csv;
 
+integer fp;
 reg clk;
 reg rst_n;
 reg signed [7:0] in;
@@ -27,8 +28,8 @@ localparam CLK_PERIOD = 10;
 always #(CLK_PERIOD/2) clk=~clk;
 
 initial begin
-    $dumpfile("tb_cordic.vcd");
-    $dumpvars(0, tb_cordic);
+    $dumpfile("tb_cordic_csv.vcd");
+    $dumpvars(0, tb_cordic_csv);
 end
 
 initial begin
@@ -38,8 +39,9 @@ clk=~clk;
 end
 
 initial begin
-    fp=$fopen("tb_out.csv","w+")
+    fp=$fopen("./tb_out.txt","w+");
     $fmonitor(fp,"%f,%f,%f",$itor(cosine*o_SF),$itor(sine*o_SF),$itor(in*sf));
+    $monitor("%f,%f,%f",$itor(cosine*o_SF),$itor(sine*o_SF),$itor(in*sf));
     #5 rst_n = 1'b0;
 	#5 rst_n = 1'b1;
     for (j = -99; j<100 ; j=j+1 ) begin
@@ -52,7 +54,6 @@ initial begin
         end
     end
     $finish(2);
-    $fclose(fp);
 end
 
 endmodule

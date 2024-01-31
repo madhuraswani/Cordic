@@ -53,7 +53,7 @@ initial begin
     in=8'b00_110010; // near pi/4
     repeat(1) @(posedge clk);
     in=8'b11_001110; //near -pi/4
-    repeat(2) @(posedge clk);
+    repeat(30) @(posedge clk);
     $finish(2); 
 end
 

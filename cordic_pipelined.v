@@ -191,6 +191,7 @@ reg flag9;
 reg flag10;
 reg flag11;
 reg flag12;
+reg flag13;
 
     //  first cycle variables getting assigned and compared with entered angle
 always @(posedge clk)begin
@@ -212,7 +213,8 @@ always @(posedge clk)begin
     flag9<=flag8;
     flag10<=flag9;
     flag11<=flag10;
-    flag12<=flag11;
+    flag13<=flag11;
+    flag12<=flag13;
 
             begin
                 case (diff0[13])
@@ -701,7 +703,6 @@ end
     wire [7:0] rounded_sine1;
     reg [7:0] rounded_cosine;
     reg [7:0] rounded_cosine1;
-
     assign fracpart=sine_temp[12:6]+sine_temp[5];
     assign cosine_fracpart=cosine_temp[12:6]+cosine_temp[5];
     always @(posedge clk) begin
@@ -722,7 +723,6 @@ end
            end
         endcase
     end
-
     // Depending upon the sign bit saved in the flag12, either the sine value is 2's complemented or  just passed as it is.
     wire signed [7:0]  x1;
     assign x1 =~rounded_sine;
@@ -738,6 +738,5 @@ end
         sine<=rounded_sine1; // final pipeline for saving sine
         cosine<=rounded_cosine; // final pipeline for saving cosine
     end
-
 
 endmodule
